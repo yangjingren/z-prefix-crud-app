@@ -14,12 +14,15 @@ function authenticateToken(req, res, next) {
   
   const token = authHeader && authHeader.split('=')[1]
   console.log(token)
-  if (token == null) return res.sendStatus(401)
+  if (token == null) {
+    next();
+  }
+    //return res.sendStatus(401)
 
   jwt.verify(token, process.env.TOKEN_SECRET, function (err, user){
-    console.log(err)
+    // console.log(err)
     
-    if (err) return res.sendStatus(403)
+    // if (err) return res.sendStatus(403)
 
     req.user = user
 
@@ -40,7 +43,10 @@ const generateHash = async (first_name, last_name, username, password, res) => {
                   let token = generateAccessToken(username)
                       console.log(token)
                       res.cookie('token', token, opts);
-                      res.send('user created');
+                      res.status(200).json({
+                        message:
+                          'Authenticated'
+                      })
                 } else {
                   res.status(404).json({
                     message:
@@ -51,16 +57,25 @@ const generateHash = async (first_name, last_name, username, password, res) => {
   });
 }
 
-const validate = async (thePlaintextPassword, usersHash, res) => {
+const validate = async (thePlaintextPassword, usersHash, username, res) => {
   bcrypt.compare(thePlaintextPassword, usersHash)
   .then( (result) => {
     // result will be true if it matches, false otherwise.
     if (result) {
       // user is authenticated!
-      console.log('authenticated')
+      let token = generateAccessToken(username)
+                      console.log(token)
+                      res.cookie('token', token, opts);
+                      res.status(200).json({
+                        message:
+                          'Authenticated'
+                      })
     }
     else {
-      res.status(401).send("Password and/or username incorrect");
+      res.status(401).json({
+        message:
+          'Password and/or username incorrect'
+      })
     }
   }
 );
