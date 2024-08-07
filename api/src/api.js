@@ -10,19 +10,23 @@ app.get('/', (req, res) => res.send('Hello World!'))
 app.post('/verify', (req, res) => {
   console.log(req.body);
   let {username, password} = req.body;
-  knex('user_table').where({username:username}).select("first_name")
-    .then((data)=>console.log(data))
-  res.status(404).json({
-    message:
-      'you have reached to login verification endpoint'
-  })
+  knex('user_table').where({username:username}).select("password")
+    .then((data) => {
+      let hash = data[0].password;
+      auth.validate(password, hash, res)
+    })
 })
 
 app.post('/register', (req, res) => {
-  console.log(req.body);
   let {first_name, last_name, username, password} = req.body;
-  //first_name: 'john', last_name: 'smith', username:'admin', password:''
-  knex("user_table").where({username:username}).select("*")
+
+  if (!first_name || !last_name || !username || !password){
+    res.status(404).json({
+      message:
+        'missing info'
+    })
+  } else {
+    knex("user_table").where({username:username}).select("*")
     .then((data) => {
       if(data.length!== 0){
         res.status(404).json({
@@ -33,6 +37,7 @@ app.post('/register', (req, res) => {
         auth.generateHash(first_name, last_name, username, password, res)
       }
     })
+  }
 })
 
 app.get('/inventory', (req, res) => {

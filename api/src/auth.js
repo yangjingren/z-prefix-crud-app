@@ -22,13 +22,13 @@ const generateHash = async (first_name, last_name, username, password, res) => {
   });
 }
 
-const validate = async (thePlaintextPassword, usersHash) => {
+const validate = async (thePlaintextPassword, usersHash, res) => {
   bcrypt.compare(thePlaintextPassword, usersHash)
   .then( (result) => {
     // result will be true if it matches, false otherwise.
     if (result) {
       // user is authenticated!
-      allowLogin(user);
+      console.log('authenticated')
     }
     else {
       res.status(401).send("Password and/or username incorrect");
