@@ -10,9 +10,10 @@ const opts = {
 }
 
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1]
-
+  const authHeader = req.headers['cookie']
+  
+  const token = authHeader && authHeader.split('=')[1]
+  console.log(token)
   if (token == null) return res.sendStatus(401)
 
   jwt.verify(token, process.env.TOKEN_SECRET, function (err, user){
@@ -65,4 +66,4 @@ const validate = async (thePlaintextPassword, usersHash, res) => {
 );
 }
 
-module.exports = {generateHash, validate};
+module.exports = {generateHash, validate, authenticateToken};

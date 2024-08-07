@@ -5,7 +5,9 @@ app.use(express.json());
 const knex = require('knex')(require('../knexfile.js')[process.env.NODE_ENV||'development']);
 const auth = require('./auth');
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', auth.authenticateToken, (req, res) => {
+  console.log(req.user)
+})
 
 app.post('/verify', (req, res) => {
   console.log(req.body);
