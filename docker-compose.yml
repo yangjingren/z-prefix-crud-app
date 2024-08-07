@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres
+    container_name: db
+    ports:
+      - "5432:5432"
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U postgres"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
+    environment:
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: warehouse_db
+    networks: 
+      - my_network
+    volumes:
+      - ./my_data_directory:/var/lib/postgresql/data
+
+  server:
+    build: ./api
+    ports:
+      # Maps the server container's port 8080 to the host container's port 8080
+      - "8080:8080"
+    networks: 
+      - my_network
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - type: bind
+        source: ./api/src
+        target: /api/src
+    
+  frontend:
+    build: ./ui
+    ports:
+      # Maps the frontend container's port 3000 to the host container's port 3002
+      - "3000:3000"
+    networks: 
+      - my_network
+    depends_on:
+      - server
+    volumes:
+      - type: bind
+        source: ./ui/src
+        target: /ui/src
+
+networks:
+  my_network:
+    driver: bridge
