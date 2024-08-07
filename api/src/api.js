@@ -39,4 +39,12 @@ app.post('/register', (req, res) => {
     })
 })
 
+app.get('/inventory', (req, res) => {
+  console.log(req.body);
+  knex("item_table").select("item_name", "description", "quantity")
+    .then((data) => {
+      res.send(data)
+    })
+})
+
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
