@@ -2,10 +2,10 @@
 FROM node:alpine
 
 # Working directory for app
-WORKDIR /app
+WORKDIR /ui
 
 # Copy all app files from curr dir to filesys of container @ /app
-COPY . /app
+COPY . /ui
 
 # Make container accept traffic on port 3000
 EXPOSE 3000
