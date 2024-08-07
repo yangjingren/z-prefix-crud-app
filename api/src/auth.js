@@ -1,6 +1,34 @@
 const knex = require('knex')(require('../knexfile.js')[process.env.NODE_ENV||'development']);
 const bcrypt = require('bcrypt');
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
 const saltRounds = 10;
+const opts = {
+  maxAge: 900000,
+  httpOnly: true,
+  sameSite: 'strict',
+}
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+
+  if (token == null) return res.sendStatus(401)
+
+  jwt.verify(token, process.env.TOKEN_SECRET, function (err, user){
+    console.log(err)
+    
+    if (err) return res.sendStatus(403)
+
+    req.user = user
+
+    next()
+  })
+}
+
+function generateAccessToken(username) {
+  return jwt.sign(username, process.env.TOKEN_SECRET);
+}
 
 const generateHash = async (first_name, last_name, username, password, res) => {
   bcrypt.hash(password, saltRounds, function(err, hash){
@@ -8,10 +36,10 @@ const generateHash = async (first_name, last_name, username, password, res) => {
               .then((data) => {
                 console.log(data.rowCount)
                 if(data.rowCount===1){
-                  res.status(200).json({
-                    message:
-                      'user created'
-                  })
+                  let token = generateAccessToken(username)
+                      console.log(token)
+                      res.cookie('token', token, opts);
+                      res.send('user created');
                 } else {
                   res.status(404).json({
                     message:
