@@ -3,6 +3,7 @@ const app = express();
 const port = 8080;
 app.use(express.json());
 const knex = require('knex')(require('../knexfile.js')[process.env.NODE_ENV||'development']);
+const auth = require('./auth');
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
@@ -29,12 +30,7 @@ app.post('/register', (req, res) => {
             'invalid username'
         })
       } else {
-        knex("user_table").insert({first_name:first_name,  last_name:last_name, username:username, password:password })
-          .then(
-            res.status(404).json({
-              message:
-                'user created'
-          }))
+        auth.generateHash(first_name, last_name, username, password, res)
       }
     })
 })

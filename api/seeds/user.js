@@ -7,7 +7,7 @@ exports.seed = async function(knex) {
     .then( () => {
       // Inserts seed entries
       return knex('user_table').insert([
-        {id: 1, first_name: 'john', last_name: 'smith', username:'admin', password:''}
+        {id: 1, first_name: 'john', last_name: 'smith', username:'admin', password:'aasdad'}
       ]);
     });
 };
