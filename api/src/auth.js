@@ -3,32 +3,12 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const saltRounds = 10;
+const cookieParser = require('cookie-parser');
 const opts = {
-  maxAge: 900000,
-  httpOnly: true,
-  sameSite: 'strict',
+  httpOnly: true
 }
 
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['cookie']
-  
-  const token = authHeader && authHeader.split('=')[1]
-  console.log(token)
-  if (token == null) {
-    next();
-  }
-    //return res.sendStatus(401)
 
-  jwt.verify(token, process.env.TOKEN_SECRET, function (err, user){
-    // console.log(err)
-    
-    // if (err) return res.sendStatus(403)
-
-    req.user = user
-
-    next()
-  })
-}
 
 function generateAccessToken(username) {
   return jwt.sign(username, process.env.TOKEN_SECRET);
@@ -81,4 +61,4 @@ const validate = async (thePlaintextPassword, usersHash, username, res) => {
 );
 }
 
-module.exports = {generateHash, validate, authenticateToken};
+module.exports = {generateHash, validate};
