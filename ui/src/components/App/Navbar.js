@@ -3,6 +3,9 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useState, useRef } from 'react';
 import { Toast } from 'primereact/toast';
+import { useContext } from 'react';
+import { AuthContext } from './App';
+
 const loginServer = 'http://localhost:8080/verify'
 const registerServer = 'http://localhost:8080/register'
 
@@ -15,6 +18,8 @@ function Navbar() {
   const [newPassword, setNewPassword] = useState('')
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
+
+  const {authStatus, setAuthStatus} = useContext(AuthContext);
 
   const toast = useRef(null);
 
@@ -37,6 +42,7 @@ function Navbar() {
       .then(res => {
         show(res.message)
         if(res.message==="Authenticated"){
+          setAuthStatus(true);
           hide(e);
         }
       })
@@ -59,6 +65,7 @@ function Navbar() {
     }).then(res => res.json())
       .then(res => {
         console.log(res.message)
+        setAuthStatus(true);
         hide(e);
       })
       .catch(err => console.log(err))
