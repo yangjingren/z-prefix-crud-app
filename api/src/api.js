@@ -168,7 +168,6 @@ app.post('/create', authenticateToken, (req, res) => {
         'Unauthorized'
     })
   }
-
 })
 
 app.get('/inventory/all', (req, res) => {
@@ -176,6 +175,64 @@ app.get('/inventory/all', (req, res) => {
     .then((data) => {
       res.send(data)
     })
+})
+
+app.get('/details/:id', authenticateToken, (req, res) => {
+  //do something based on user
+  const id = req.params.id;
+  console.log('req.user for Details  ' + req.user)
+  if (req.user){
+    if (!id){
+      res.status(200).json({
+        message:
+          'Invalid Entry'
+      })
+    } else {
+      knex("item_table").where({id: id}).select("*")
+        .then((data) => {
+          if (data.length > 0){
+            knex("user_table").where({username: req.user}).select("id")
+              .then((userData) => {
+                if (userData.length > 0){
+                  console.log(userData[0].id)
+                  if (userData[0].id === data[0].userid){
+                    data[0]["edit"] = true;
+                    res.send(data[0]);
+                  } else {
+                    res.send(data[0])
+                  }
+                } else {
+                  res.send(data);
+                }
+              })
+          } else {
+            res.status(200).json({
+              message:
+                'Item not found'
+            })
+          }
+        })
+    }
+  } else {
+    if (!id){
+      res.status(200).json({
+        message:
+          'Invalid Entry'
+      })
+    } else {
+      knex("item_table").where({id: id}).select("*")
+        .then((data) => {
+          if (data.length > 0){
+            res.send(data[0]);
+          } else {
+            res.status(200).json({
+              message:
+                'Item not found'
+            })
+          }
+        })
+    }
+  }
 })
 
 

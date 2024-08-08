@@ -91,7 +91,6 @@ export const Navbar = () => {
       }
     }).then(res => res.json())
       .then(res => {
-        console.log(res.message)
         setAuthStatus(false);
         navigate('/')
       })
