@@ -4,9 +4,9 @@ import './Inventory.css';
 
 const CHAR_LIMIT = 100;
 
-const inventoryServer = 'http://localhost:8080/inventory/all'
+const inventoryServer = 'http://localhost:8080/inventory'
 
-export default function Inventory(){
+export default function PersonalInventory(){
   const [fullInventory, setFullInventory] = useState([]);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function Inventory(){
               </div>
             )
           })
-        ):(<>No Items Found
+        ):(<>No items found
         </>)}
     </div>
   );

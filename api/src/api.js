@@ -50,7 +50,10 @@ app.post('/verify', (req, res) => {
         let hash = data[0].password;
         auth.validate(password, hash, username, res)
       } else {
-        res.status(401).send("Password and/or username incorrect");
+        res.status(401).json({
+          message:
+            "Password and/or username incorrect"
+        })
       }
     })
 })
@@ -126,6 +129,37 @@ app.get('/inventory', authenticateToken, (req, res) => {
   
 })
 
+app.post('/create', authenticateToken, (req, res) => {
+  //do something based on user
+  console.log('req.user for Create  ' + req.user)
+  if (req.user){
+    if (!req.item_name || !req.description || !req.quantity){
+      res.status(200).json({
+        message:
+          'Invalid Entry'
+      })
+    } else {
+      knex("item_table").join('user_table', 'user_table.id', '=', 'item_table.userid').where({username: req.user}).select("item_table.id", "item_name", "description", "quantity")
+        .then((data) => {
+          if (data){
+            console.log(data.length)
+            res.send(data)
+          } else {
+            res.status(200).json({
+              message:
+                'No items found'
+            })
+          }
+        })
+    }
+  } else {
+    res.status(200).json({
+      message:
+        'Unauthorized'
+    })
+  }
+
+})
 
 app.get('/inventory/all', (req, res) => {
   knex("item_table").select("id", "item_name", "description", "quantity")

@@ -5,11 +5,14 @@ import { useState, useRef } from 'react';
 import { Toast } from 'primereact/toast';
 import { useContext } from 'react';
 import { AuthContext } from './App';
+import { useNavigate } from 'react-router-dom';
+
 
 const loginServer = 'http://localhost:8080/verify'
 const registerServer = 'http://localhost:8080/register'
+const logoutServer = 'http://localhost:8080/logout'
 
-function Navbar() {
+export const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const [visibleReg, setVisibleReg] = useState(false);
   const [username, setUsername] = useState('')
@@ -21,15 +24,20 @@ function Navbar() {
 
   const {authStatus, setAuthStatus} = useContext(AuthContext);
 
+  const navigate = useNavigate();
+
   const toast = useRef(null);
 
   const show = (message) => {
       toast.current.show({ severity: 'info', summary: 'Info', detail: message });
   };
 
+  
+  
   const onClickLogin = async (e, hide) => {
-    const response = await fetch(loginServer, {
+    await fetch(loginServer, {
       method: 'POST',
+      credentials: "include", 
       headers: {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json',
@@ -50,8 +58,9 @@ function Navbar() {
   }
 
   const onClickRegister = async (e, hide) => {
-    const response = await fetch(registerServer, {
+    await fetch(registerServer, {
       method: 'POST',
+      credentials: "include", 
       headers: {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json',
@@ -71,11 +80,37 @@ function Navbar() {
       .catch(err => console.log(err))
   }
 
+  const onClickLogout = async () => {
+    await fetch(logoutServer, {
+      method: 'POST',
+      credentials: "include", 
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+      }
+    }).then(res => res.json())
+      .then(res => {
+        console.log(res.message)
+        setAuthStatus(false);
+        navigate('/')
+      })
+      .catch(err => console.log(err))
+       
+  }
+
   return (
     <div>
-        <div className=" flex justify-content-center gap-2 mt-2">
+        <div className=" flex justify-content-center gap-2 my-2">
         <Toast ref={toast} />
-            <Button label="Login" icon="pi pi-user" onClick={() => setVisible(true)} />
+            {authStatus ? (<>
+              <Button label="Logout" icon="pi pi-sign-out" onClick={() => onClickLogout()} />
+              <Button label="Create Item" icon="pi pi-plus" onClick={() => navigate('/create')} />
+              <Button label="Personal Inventory"  onClick={() => navigate('/personal')} />
+              <Button label="All Items"  onClick={() => navigate('/')} />
+                </>
+              ): (
+                <>
+                <Button label="Login" icon="pi pi-user" onClick={() => setVisible(true)} />
             <Dialog
                 visible={visible}
                 modal
@@ -146,10 +181,11 @@ function Navbar() {
                         </div>
                     </div>
                 )}
-            ></Dialog>
+            ></Dialog> </>
+              )}
+            
         </div>
     </div>
   );
 }
 
-export default Navbar;
