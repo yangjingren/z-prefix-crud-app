@@ -1,7 +1,7 @@
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Toast } from 'primereact/toast';
 import { useContext } from 'react';
 import { AuthContext } from './App';
@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 const loginServer = 'http://localhost:8080/verify'
 const registerServer = 'http://localhost:8080/register'
 const logoutServer = 'http://localhost:8080/logout'
+const statusServer = 'http://localhost:8080/status'
 
 export const Navbar = () => {
   const [visible, setVisible] = useState(false);
@@ -32,7 +33,24 @@ export const Navbar = () => {
       toast.current.show({ severity: 'info', summary: 'Info', detail: message });
   };
 
-  
+  //checks if auth token present
+  useEffect(() => {
+    fetch(statusServer, {
+      method: 'POST',
+      credentials: "include", 
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+      }
+    }).then(res => res.json())
+      .then(res => {
+        show(res.message)
+        if(res.message==="Authenticated"){
+          setAuthStatus(true);
+        } 
+      })
+      .catch(err => console.log(err))
+  }, [])
   
   const onClickLogin = async (e, hide) => {
     await fetch(loginServer, {

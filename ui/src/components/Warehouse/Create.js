@@ -58,7 +58,7 @@ export const Create = () => {
             <label htmlFor="itemname" className="text-primary-50 font-semibold">
                 Item Name
             </label>
-            <InputText id="itemname" label="ItemName" className="bg-white-alpha-20 border-none p-3 text-primary-50" onChange={(e)=>setItemName(e.target.value)} keyfilter="alphanum" maxlength="50"></InputText>
+            <InputText id="itemname" label="ItemName" className="bg-white-alpha-20 border-none p-3 text-primary-50" onChange={(e)=>setItemName(e.target.value)} keyfilter="alphanum" maxLength="50"></InputText>
         </div>
         <div className="inline-flex flex-column gap-2">
             <label htmlFor="description" className="text-primary-50 font-semibold">
@@ -70,7 +70,7 @@ export const Create = () => {
             <label htmlFor="quantity" className="text-primary-50 font-semibold">
                 Quantity
             </label>
-            <InputText id="quantity" label="Quantity" className="bg-white-alpha-20 border-none p-3 text-primary-50" onChange={(e)=>setQuantity(e.target.value)} keyfilter="pint" maxlength="10"></InputText>
+            <InputText id="quantity" label="Quantity" className="bg-white-alpha-20 border-none p-3 text-primary-50" onChange={(e)=>setQuantity(e.target.value)} keyfilter="pint" maxLength="10"></InputText>
         </div>
         <div className="flex align-items-center gap-2">
             <Button label="Add Item" 

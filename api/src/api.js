@@ -58,6 +58,33 @@ app.post('/verify', (req, res) => {
     })
 })
 
+app.post('/status', authenticateToken, (req, res) => {
+  //do something based on user
+  console.log('req.user  ' + req.user)
+  if (req.user){
+    knex("user_table").where({username: req.user}).select("id")
+      .then((data)=>{
+        if (data.length > 0){
+          res.status(200).json({
+            message:
+              "Authenticated"
+          })
+        } else {
+          res.status(200).json({
+            message:
+              "Unauthorized"
+          })
+        }
+      })
+  } else {
+    res.status(200).json({
+      message:
+        "Unauthorized"
+    })
+  }
+  
+})
+
 app.post('/register', (req, res) => {
   let {first_name, last_name, username, password} = req.body;
 
