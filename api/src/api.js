@@ -133,23 +133,33 @@ app.post('/create', authenticateToken, (req, res) => {
   //do something based on user
   console.log('req.user for Create  ' + req.user)
   if (req.user){
-    if (!req.item_name || !req.description || !req.quantity){
+    const {item_name, description, quantity} = req.body;
+    if (!item_name || !description || !quantity){
       res.status(200).json({
         message:
           'Invalid Entry'
       })
     } else {
-      knex("item_table").join('user_table', 'user_table.id', '=', 'item_table.userid').where({username: req.user}).select("item_table.id", "item_name", "description", "quantity")
+      knex("user_table").where({username: req.user}).select("id")
         .then((data) => {
-          if (data){
-            console.log(data.length)
-            res.send(data)
-          } else {
-            res.status(200).json({
-              message:
-                'No items found'
-            })
-          }
+          if (data.length > 0){
+            knex("item_table").insert({userid:data[0].id,  item_name:item_name, description:description, quantity:quantity })
+              .then((data) => {
+                console.log(data.rowCount)
+                if(data.rowCount===1){
+                  res.status(200).json({
+                    message:
+                      'Item created'
+                  })
+                } else {
+                  res.status(200).json({
+                    message:
+                      'Error creating item'
+                  })
+                }
+              })
+
+          } 
         })
     }
   } else {

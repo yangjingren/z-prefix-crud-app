@@ -52,6 +52,7 @@ export const Navbar = () => {
         if(res.message==="Authenticated"){
           setAuthStatus(true);
           hide(e);
+          navigate('/personal')
         }
       })
       .catch(err => console.log(err))

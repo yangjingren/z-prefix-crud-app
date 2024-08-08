@@ -35,18 +35,15 @@ export const Create = () => {
     }).then(res => res.json())
       .then(res => {
         show(res.message)
-        if (res.message === "item created"){
+        if (res.message === "Item created"){
           setTimeout(function(){
             navigate('/personal');
-        }, 1000);
-          
-          
+          }, 1000);  
         }
         if (res.message === "Unauthorized"){
           setTimeout(function(){
             navigate('/');
-        }, 1000);
-          
+          }, 1000);
         }
       })
       .catch(err => console.log(err))
