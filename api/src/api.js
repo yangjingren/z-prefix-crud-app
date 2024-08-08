@@ -55,8 +55,7 @@ app.post('/register', (req, res) => {
 })
 
 app.get('/inventory', (req, res) => {
-  console.log(req.body);
-  knex("item_table").select("item_name", "description", "quantity")
+  knex("item_table").select("id", "item_name", "description", "quantity")
     .then((data) => {
       res.send(data)
     })

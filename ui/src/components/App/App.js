@@ -10,6 +10,8 @@ export const AuthContext = createContext()
 function App() {
   const [authStatus, setAuthStatus] = useState(false);
 
+  
+
   return (
     <div>
         <AuthContext.Provider value={{authStatus, setAuthStatus}}>

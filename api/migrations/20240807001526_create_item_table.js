@@ -4,10 +4,10 @@
  */
 exports.up = function(knex) {
   return knex.schema.createTable('item_table', table => {
-    table.increments('id'); // adds an auto incrementing PK column
+    table.increments(); // adds an auto incrementing PK column
     table.bigInteger('userid').notNullable(); // equivalent of varchar(255)
     table.string('item_name').notNullable(); // equivalent of varchar(255)
-    table.string('description').notNullable(); // equivalent of varchar(255)
+    table.string('description', 1000).notNullable(); // equivalent of varchar(255)
     table.bigInteger('quantity').notNullable(); // equivalent of varchar(255)
   });
 };

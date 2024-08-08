@@ -73,7 +73,7 @@ function Navbar() {
 
   return (
     <div>
-        <div className="card flex justify-content-center gap-2 mt-2">
+        <div className=" flex justify-content-center gap-2 mt-2">
         <Toast ref={toast} />
             <Button label="Login" icon="pi pi-user" onClick={() => setVisible(true)} />
             <Dialog
