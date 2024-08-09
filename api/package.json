@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "knex migrate:latest && knex seed:run && node index.js",
-    "start-dev": "knex migrate:rollback && knex migrate:latest && knex seed:run && nodemon ./src/api.js",
+    "start-dev": "knex migrate:rollback && knex migrate:latest && nodemon ./src/api.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

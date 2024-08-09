@@ -53,32 +53,32 @@ export const Create = () => {
   return (
     <>
     <Toast ref={toast} />
-    <div className="flex flex-column px-8 py-5 gap-4" style={{ borderRadius: '12px', backgroundImage: 'radial-gradient(circle at left top, var(--primary-400), var(--primary-700))' }}>
+    <div className="flex flex-column px-8 py-5 gap-4" style={{ borderRadius: '12px'}}>
         <div className="inline-flex flex-column gap-2">
-            <label htmlFor="itemname" className="text-primary-50 font-semibold">
+            <label htmlFor="itemname" className="font-semibold">
                 Item Name
             </label>
-            <InputText id="itemname" label="ItemName" className="bg-white-alpha-20 border-none p-3 text-primary-50" onChange={(e)=>setItemName(e.target.value)} keyfilter="alphanum" maxLength="50"></InputText>
+            <InputText id="itemname" label="ItemName" className="p-3 text-black-alpha-80" onChange={(e)=>setItemName(e.target.value)} maxLength="50"></InputText>
         </div>
         <div className="inline-flex flex-column gap-2">
-            <label htmlFor="description" className="text-primary-50 font-semibold">
+            <label htmlFor="description" className="font-semibold">
                 Description
             </label>
-            <InputTextarea id="description" label="Description" className="bg-white-alpha-20 border-none p-3 text-primary-50" onChange={(e)=>setDescription(e.target.value)} keyfilter="alphanum" rows={5} cols={30} maxLength="500" autoResize></InputTextarea>
+            <InputTextarea id="description" label="Description" className="p-3 text-black-alpha-80" onChange={(e)=>setDescription(e.target.value)} rows={5} cols={30} maxLength="500" autoResize></InputTextarea>
         </div>
         <div className="inline-flex flex-column gap-2">
-            <label htmlFor="quantity" className="text-primary-50 font-semibold">
+            <label htmlFor="quantity" className="font-semibold">
                 Quantity
             </label>
-            <InputText id="quantity" label="Quantity" className="bg-white-alpha-20 border-none p-3 text-primary-50" onChange={(e)=>setQuantity(e.target.value)} keyfilter="pint" maxLength="10"></InputText>
+            <InputText id="quantity" label="Quantity" className="p-3 text-black-alpha-80" onChange={(e)=>setQuantity(e.target.value)} keyfilter="pint" maxLength="10"></InputText>
         </div>
         <div className="flex align-items-center gap-2">
             <Button label="Add Item" 
               onClick={(e) => {
                 onClickCreate(e);
               }} 
-              text className="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"></Button>
-            <Button label="Cancel" onClick={(e) => navigate('/')} text className="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"></Button>
+              text className="p-3 w-full border-1 border-black-alpha-30 hover:bg-black-alpha-10"></Button>
+            <Button label="Cancel" onClick={(e) => navigate('/')} text className="p-3 w-full border-1 border-black-alpha-30 hover:bg-black-alpha-10"></Button>
         </div>
     </div>
     </>

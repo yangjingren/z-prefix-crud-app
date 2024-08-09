@@ -95,6 +95,7 @@ export const Navbar = () => {
         console.log(res.message)
         setAuthStatus(true);
         hide(e);
+        navigate('/personal')
       })
       .catch(err => console.log(err))
   }

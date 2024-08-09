@@ -222,6 +222,47 @@ app.put('/update', authenticateToken, (req, res) => {
   }
 })
 
+app.delete('/delete', authenticateToken, (req, res) => {
+  if (req.user){
+    const {item_id} = req.body;
+    if (!item_id){
+      res.status(200).json({
+        message:
+          'Invalid Entry'
+      })
+    } else {
+      knex("user_table").where({username: req.user}).select("id")
+        .then((data) => {
+          if (data.length > 0){
+            knex("item_table")
+            .where('id', '=', item_id).del()
+              .then(() => {
+                knex("item_table").where({id:item_id}).select("*")
+                  .then((data)=>{
+                    if(data.length === 0){
+                      res.status(200).json({
+                             message:
+                              'Item deleted'
+                           })
+                    } else {
+                        res.status(200).json({
+                          message:
+                            'Error deleting item'
+                        })
+                      }
+                  })
+              })
+          } 
+        })
+    }
+  } else {
+    res.status(200).json({
+      message:
+        'Unauthorized'
+    })
+  }
+})
+
 app.get('/inventory/all', (req, res) => {
   knex("item_table").select("id", "item_name", "description", "quantity")
     .then((data) => {
