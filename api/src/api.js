@@ -4,7 +4,6 @@ const port = 8080;
 const cors = require('cors');
 const knex = require('knex')(require('../knexfile.js')[process.env.NODE_ENV||'development']);
 const auth = require('./auth');
-const cookieParser = require('cookie-parser');
 
 const jwt = require('jsonwebtoken');
 
@@ -18,26 +17,27 @@ app.use(cors({
   credentials: true,
   origin: 'http://localhost:3000'
 }));
-app.use(cookieParser());
 
-
+// Authenticates the JWT token sent to the Client
 function authenticateToken(req, res, next) {
+  // Checks if the client sent a JWT token with the request
   const authHeader = req.headers['cookie']
   const token = authHeader && authHeader.split('=')[1]
   if (token === null) {
+    // If no user is found continue onto the Clients request
     req.user = null;
     next();
   } else {
+    // Jwt validation function
     jwt.verify(token, process.env.TOKEN_SECRET, function (err, user){
-
+      // If user is found continue onto the Clients request after appending the user to the req
       req.user = user;
-  
       next()
     })
   }
 }
 
-
+// Validate the user's credentials
 app.post('/verify', (req, res) => {
   let {username, password} = req.body;
   knex('user_table').where({username:username}).select("password")

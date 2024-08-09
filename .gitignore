@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/api/node_modules
+/ui/node_modules
 /my_data_directory
 /.pnp
 .pnp.js
@@ -13,6 +15,7 @@
 /build
 
 # misc
+/api/.env
 .DS_Store
 .env.local
 .env.development.local

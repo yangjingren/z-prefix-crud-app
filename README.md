@@ -1,6 +1,8 @@
 # Getting Started with Z Prefix Crud App
 
-
+For this project the .env file has been provided for the server.
+The DB_CONNECTION_STRING is generic and for this project.
+The TOKEN_SECRET is a randomly generated HEX and can be replaced by another gen.
 
 Accounts and items must be created for the App as the seeds are not provided.
 
@@ -62,3 +64,4 @@ The JSW token validates your session and username for the server to use for comp
 The JSW token is created by the server and sent via HTTPonly to the client for continuous auth purposes.
 
 ### `npm docker-compose down`
+To tear down and remove the containers.
