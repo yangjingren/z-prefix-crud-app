@@ -124,7 +124,7 @@ export const Navbar = () => {
               <Button label="Logout" icon="pi pi-sign-out" onClick={() => onClickLogout()} />
               <Button label="Create Item" icon="pi pi-plus" onClick={() => navigate('/create')} />
               <Button label="Personal Inventory"  onClick={() => navigate('/personal')} />
-              <Button label="All Items"  onClick={() => navigate('/')} />
+              
                 </>
               ): (
                 <>
@@ -201,7 +201,7 @@ export const Navbar = () => {
                 )}
             ></Dialog> </>
               )}
-            
+            <Button label="All Items"  onClick={() => navigate('/')} />
         </div>
     </div>
   );

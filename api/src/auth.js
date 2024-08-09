@@ -18,10 +18,8 @@ const generateHash = async (first_name, last_name, username, password, res) => {
   bcrypt.hash(password, saltRounds, function(err, hash){
     knex("user_table").insert({first_name:first_name,  last_name:last_name, username:username, password:hash })
               .then((data) => {
-                console.log(data.rowCount)
                 if(data.rowCount===1){
                   let token = generateAccessToken(username)
-                      console.log(token)
                       res.cookie('token', token, opts);
                       res.status(200).json({
                         message:
@@ -44,7 +42,6 @@ const validate = async (thePlaintextPassword, usersHash, username, res) => {
     if (result) {
       // user is authenticated!
       let token = generateAccessToken(username)
-                      console.log(token)
                       res.cookie('token', token, opts);
                       res.status(200).json({
                         message:

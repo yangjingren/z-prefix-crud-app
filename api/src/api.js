@@ -22,11 +22,8 @@ app.use(cookieParser());
 
 
 function authenticateToken(req, res, next) {
-  console.log("cookie?:  " +req.cookie)
   const authHeader = req.headers['cookie']
-  console.log("authHeader   " + authHeader);
   const token = authHeader && authHeader.split('=')[1]
-  console.log("token   "    +  token)
   if (token === null) {
     req.user = null;
     next();
@@ -42,7 +39,6 @@ function authenticateToken(req, res, next) {
 
 
 app.post('/verify', (req, res) => {
-  console.log(req.body);
   let {username, password} = req.body;
   knex('user_table').where({username:username}).select("password")
     .then((data) => {
@@ -60,7 +56,6 @@ app.post('/verify', (req, res) => {
 
 app.post('/status', authenticateToken, (req, res) => {
   //do something based on user
-  console.log('req.user  ' + req.user)
   if (req.user){
     knex("user_table").where({username: req.user}).select("id")
       .then((data)=>{
@@ -110,7 +105,6 @@ app.post('/register', (req, res) => {
 
 app.post('/logout', (req, res) => {
   let token = '';
-  console.log(token)
   res.cookie('token', token, opts);
   res.status(200).json({
     message:
@@ -119,14 +113,10 @@ app.post('/logout', (req, res) => {
 })
 
 app.get('/inventory', authenticateToken, (req, res) => {
-  //do something based on user
-  console.log('req.user  ' + req.user)
   if (req.user){
-    console.log("user_inventor")
     knex("item_table").join('user_table', 'user_table.id', '=', 'item_table.userid').where({username: req.user}).select("item_table.id", "item_name", "description", "quantity")
     .then((data) => {
       if (data){
-        console.log(data.length)
         res.send(data)
       } else {
         res.status(200).json({
@@ -136,16 +126,12 @@ app.get('/inventory', authenticateToken, (req, res) => {
       }
     })
   } else {
-    console.log("else inventroy")
 
     knex("item_table").select("id", "item_name", "description", "quantity")
     .then((data) => {
-      console.log(data.length)
       if (data) {
-        console.log("in data")
         res.send(data)
       } else {
-        console.log("in else")
         res.status(200).json({
           message:
             'No items found'
@@ -157,8 +143,6 @@ app.get('/inventory', authenticateToken, (req, res) => {
 })
 
 app.post('/create', authenticateToken, (req, res) => {
-  //do something based on user
-  console.log('req.user for Create  ' + req.user)
   if (req.user){
     const {item_name, description, quantity} = req.body;
     if (!item_name || !description || !quantity){
@@ -170,9 +154,8 @@ app.post('/create', authenticateToken, (req, res) => {
       knex("user_table").where({username: req.user}).select("id")
         .then((data) => {
           if (data.length > 0){
-            knex("item_table").insert({userid:data[0].id,  item_name:item_name, description:description, quantity:quantity })
+            knex("item_table").insert({userid:BigInt(data[0].id),  item_name:item_name, description:description, quantity:quantity })
               .then((data) => {
-                console.log(data.rowCount)
                 if(data.rowCount===1){
                   res.status(200).json({
                     message:
@@ -197,6 +180,48 @@ app.post('/create', authenticateToken, (req, res) => {
   }
 })
 
+app.put('/update', authenticateToken, (req, res) => {
+  if (req.user){
+    const {item_name, description, quantity, item_id} = req.body;
+    if (!item_name || !description || !quantity || !item_id){
+      res.status(200).json({
+        message:
+          'Invalid Entry'
+      })
+    } else {
+      knex("user_table").where({username: req.user}).select("id")
+        .then((data) => {
+          if (data.length > 0){
+            knex("item_table")
+            .update({item_name:item_name, description:description, quantity:quantity })
+            .where('id', '=', item_id)
+              .then(() => {
+                knex("item_table").where({id:item_id}).select("*")
+                  .then((data)=>{
+                    if(data[0].description === description && data[0].quantity===quantity && data[0].item_name===item_name){
+                      res.status(200).json({
+                             message:
+                              'Item updated'
+                           })
+                    } else {
+                        res.status(200).json({
+                          message:
+                            'Error updating item'
+                        })
+                      }
+                  })
+              })
+          } 
+        })
+    }
+  } else {
+    res.status(200).json({
+      message:
+        'Unauthorized'
+    })
+  }
+})
+
 app.get('/inventory/all', (req, res) => {
   knex("item_table").select("id", "item_name", "description", "quantity")
     .then((data) => {
@@ -207,7 +232,6 @@ app.get('/inventory/all', (req, res) => {
 app.get('/details/:id', authenticateToken, (req, res) => {
   //do something based on user
   const id = req.params.id;
-  console.log('req.user for Details  ' + req.user)
   if (req.user){
     if (!id){
       res.status(200).json({
@@ -221,8 +245,7 @@ app.get('/details/:id', authenticateToken, (req, res) => {
             knex("user_table").where({username: req.user}).select("id")
               .then((userData) => {
                 if (userData.length > 0){
-                  console.log(userData[0].id)
-                  if (userData[0].id === data[0].userid){
+                  if (userData[0].id === Number(data[0].userid)){
                     data[0]["edit"] = true;
                     res.send(data[0]);
                   } else {
