@@ -11,6 +11,7 @@ export default function PersonalInventory(){
   const [fullInventory, setFullInventory] = useState([]);
   const navigate = useNavigate();
 
+  // Fetch all personal items on load
   useEffect(() => {
     fetch(inventoryServer,{
       credentials: 'include',
@@ -24,12 +25,13 @@ export default function PersonalInventory(){
       })
   },[])
 
+  // Navigate to details page on card click
   const onClickFunction = (id) => {
     navigate(`/item/${id}`);
   }
 
   return (
-    <div>
+    <div className="flex flex-wrap justify-content-start">
         {fullInventory.length > 0 ? (
           fullInventory.map((item) => {
             return (
@@ -37,9 +39,10 @@ export default function PersonalInventory(){
                 <Card title={item.item_name} onClick={() => onClickFunction(item.id)}>
                   <p className="m-0">
                     Description: <br/ >
+                    {/* Text is clipped if for some reason the user types something so long it overflows the card width without a space. */}
                     {item.description.length > 100 ? (
-                      <>{item.description.substring(0, CHAR_LIMIT)}...</>
-                    ) : (<>{item.description}</>)}
+                      <div className="text-overflow-clip overflow-hidden">{item.description.substring(0, CHAR_LIMIT)}...</div>
+                    ) : (<div className="text-overflow-clip overflow-hidden">{item.description}</div>)}
                   </p> <br />
                   <footer>Quantity: {item.quantity}</footer>
                 </Card>

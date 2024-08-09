@@ -1,8 +1,9 @@
 # Getting Started with Z Prefix Crud App
 
-For this project create a .env file in the api folder with the following two requirements.
+For this project create a .env file in the api folder with the following two items:
+Use the following code to generate a hex for the token secret.
 `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
-to generate a hex for the token secret
+
 DB_CONNECTION_STRING=postgresql://postgres:docker@db:5432/warehouse_db
 TOKEN_SECRET=paste-the-generated-hex-here
 

@@ -13,12 +13,12 @@ export const Create = () => {
   const [quantity, setQuantity] = useState(0);
   const navigate = useNavigate();
 
- 
-
+  // Displays alert messages
   const show = (message) => {
       toast.current.show({ severity: 'info', summary: 'Info', detail: message });
   };
 
+  // Creation function
   const onClickCreate = async (e) => {
     await fetch(createServer, {
       method: 'POST',
@@ -36,11 +36,13 @@ export const Create = () => {
       .then(res => {
         show(res.message)
         if (res.message === "Item created"){
+          // Navigate to personal page if item creation successful
           setTimeout(function(){
             navigate('/personal');
           }, 1000);  
         }
         if (res.message === "Unauthorized"){
+          // Navigate to main page if unauthorized to create
           setTimeout(function(){
             navigate('/');
           }, 1000);
