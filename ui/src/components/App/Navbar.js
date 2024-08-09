@@ -7,11 +7,7 @@ import { useContext } from 'react';
 import { AuthContext } from './App';
 import { useNavigate } from 'react-router-dom';
 
-
-const loginServer = 'http://localhost:8080/verify'
-const registerServer = 'http://localhost:8080/register'
-const logoutServer = 'http://localhost:8080/logout'
-const statusServer = 'http://localhost:8080/status'
+const server = 'http://localhost:8080/'
 
 export const Navbar = () => {
   const [visible, setVisible] = useState(false);
@@ -29,13 +25,14 @@ export const Navbar = () => {
 
   const toast = useRef(null);
 
+  // Displays alert messages
   const show = (message) => {
       toast.current.show({ severity: 'info', summary: 'Info', detail: message });
   };
 
-  //checks if auth token present
+  // Checks if user is currently authenticated with JWT and updates NAVBAR if they are
   useEffect(() => {
-    fetch(statusServer, {
+    fetch(`${server}status`, {
       method: 'POST',
       credentials: "include", 
       headers: {
@@ -52,8 +49,9 @@ export const Navbar = () => {
       .catch(err => console.log(err))
   }, [])
   
+  // Log in function
   const onClickLogin = async (e, hide) => {
-    await fetch(loginServer, {
+    await fetch(`${server}verify`, {
       method: 'POST',
       credentials: "include", 
       headers: {
@@ -68,6 +66,7 @@ export const Navbar = () => {
       .then(res => {
         show(res.message)
         if(res.message==="Authenticated"){
+          // Navigate the personal page if successful login
           setAuthStatus(true);
           hide(e);
           navigate('/personal')
@@ -76,8 +75,9 @@ export const Navbar = () => {
       .catch(err => console.log(err))
   }
 
+  // Registration function
   const onClickRegister = async (e, hide) => {
-    await fetch(registerServer, {
+    await fetch(`${server}register`, {
       method: 'POST',
       credentials: "include", 
       headers: {
@@ -92,16 +92,20 @@ export const Navbar = () => {
       })
     }).then(res => res.json())
       .then(res => {
-        console.log(res.message)
-        setAuthStatus(true);
-        hide(e);
-        navigate('/personal')
+        show(res.message)
+        if(res.message==="Authenticated"){
+          // Navigate the personal page if successful registration
+          setAuthStatus(true);
+          hide(e);
+          navigate('/personal')
+        }
       })
       .catch(err => console.log(err))
   }
 
+  // Log out function
   const onClickLogout = async () => {
-    await fetch(logoutServer, {
+    await fetch(`${server}logout`, {
       method: 'POST',
       credentials: "include", 
       headers: {
@@ -110,6 +114,7 @@ export const Navbar = () => {
       }
     }).then(res => res.json())
       .then(res => {
+        // Navigate to home page on logout and reset navbar
         setAuthStatus(false);
         navigate('/')
       })

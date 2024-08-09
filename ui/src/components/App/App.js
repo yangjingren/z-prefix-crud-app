@@ -9,13 +9,11 @@ import Inventory from "../Warehouse/Inventory";
 import { Create } from "../Warehouse/Create";
 import { Details } from "../Warehouse/Details";
 
-
+// Auth context for NavBar
 export const AuthContext = createContext()
 
 function App() {
   const [authStatus, setAuthStatus] = useState(false);
-
-  
 
   return (
     <div>
